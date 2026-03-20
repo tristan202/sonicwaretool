@@ -41,6 +41,9 @@ This project is licensed under the MIT License.
 
 Open Source (MIT) - You are free to use, copy, modify, merge, publish, and distribute this software for any purpose, personal or commercial.
 
+<img width="527" height="605" alt="{370C2809-32AA-4CD2-BDF6-101D8532860B}" src="https://github.com/user-attachments/assets/2f837d08-eb94-40eb-bcf8-11a2d90aa728" />
+
+
 👤 Credits
 Created by: tristan202 GitHub: github.com/tristan202
 
