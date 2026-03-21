@@ -1,6 +1,8 @@
 Sonicware Lofi-12 XT Tool v1.0
 A high-speed batch audio converter specifically designed for hardware samplers like the Sonicware Lofi-12 XT. Powered by the legendary SoX (Sound eXchange) engine for maximum precision and performance.
 
+<img width="527" height="605" alt="{F2D968D6-CD5E-44C0-929F-3B7E091C8C09}" src="https://github.com/user-attachments/assets/bbed9fee-3069-4128-a458-017012a7ef5a" />
+
 🚀 Features
 Batch Processing: Drag and drop multiple files or entire folders.
 
@@ -40,9 +42,6 @@ Convert: Hit START CONVERSION. The tool will process the files and automatically
 This project is licensed under the MIT License.
 
 Open Source (MIT) - You are free to use, copy, modify, merge, publish, and distribute this software for any purpose, personal or commercial.
-
-<img width="527" height="605" alt="{370C2809-32AA-4CD2-BDF6-101D8532860B}" src="https://github.com/user-attachments/assets/2f837d08-eb94-40eb-bcf8-11a2d90aa728" />
-
 
 👤 Credits
 Created by: tristan202 GitHub: github.com/tristan202
