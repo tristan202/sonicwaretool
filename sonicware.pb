@@ -277,8 +277,8 @@ EndProcedure
 
 LoadSettings()
 G_SoXPath = FindSoX()
-LoadFont(0, "Segoe UI", 10)
-LoadFont(1, "Segoe UI", 10, #PB_Font_Bold)
+LoadFont(0, "Calibri", 12)
+LoadFont(1, "Calibri", 12, #PB_Font_Bold)
 SetGadgetFont(#PB_Default, FontID(0))
 
 If OpenWindow(#WinMain, 0, 0, 700, 820, "", #PB_Window_SystemMenu | #PB_Window_ScreenCentered)
@@ -440,8 +440,8 @@ EndIf
   Until Event = #PB_Event_CloseWindow
 EndIf
 ; IDE Options = PureBasic 6.30 (Windows - x64)
-; CursorPosition = 385
-; FirstLine = 382
+; CursorPosition = 280
+; FirstLine = 276
 ; Folding = ---
 ; EnableThread
 ; EnableXP
