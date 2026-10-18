@@ -2,7 +2,7 @@
 
 A high-speed batch audio converter specifically designed for hardware samplers like the Sonicware Lofi-12 XT. Powered by the legendary SoX (Sound eXchange) engine for maximum precision and performance.
 
-<img width="527" height="605" alt="Screenshot of Sonicware Lofi-12 XT Tool" src="https://github.com/user-attachments/assets/bbed9fee-3069-4128-a458-017012a7ef5a" />
+<img width="527" alt="Screenshot of Sonicware Lofi-12 XT Tool" src="docs/screenshot.png" />
 
 ## 🚀 Features
 
