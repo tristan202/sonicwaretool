@@ -56,8 +56,10 @@ Global G_LblSampleRate, G_LblBitDepth, G_LblChannels, G_LblDevice
 
 Global NewMap Lg.s()
 Global NewList FilesToProcess.s()
-Global G_OutputDir.s = GetHomeDirectory() + "Documents\XT_Export\"
-Global G_IniFile.s = "lofi_config.ini"
+Global G_AppDir.s = GetPathPart(ProgramFilename())
+Global G_OutputDir.s = GetUserDirectory(#PB_Directory_Documents) + "XT_Export\"
+Global G_ConfigDir.s = GetUserDirectory(#PB_Directory_ProgramData) + "SonicwareTool\"
+Global G_IniFile.s = G_ConfigDir + "lofi_config.ini"
 Global G_CurrentLanguage.s = "English"
 Global G_SoXPath.s = ""
 Global G_SelDevice = 0, G_SelSR = 1, G_SelBD = 0, G_SelCH = 0, G_SelNorm = 0, G_SelTrim = 0, G_SelReverse = 0, G_SelOpenDir = 1
@@ -72,7 +74,8 @@ Procedure.s FindSoX()
   
   ForEach SearchFiles()
     Protected CurrentExe.s = SearchFiles()
-    If FileSize(CurrentExe) > 0 : ProcedureReturn CurrentExe : EndIf
+    If FileSize(G_AppDir + CurrentExe) > 0 : ProcedureReturn G_AppDir + CurrentExe : EndIf
+    If FileSize(CurrentExe) > 0 : ProcedureReturn GetCurrentDirectory() + CurrentExe : EndIf
     If FileSize("C:\Program Files (x86)\sox-14-4-2\" + CurrentExe) > 0 
       ProcedureReturn "C:\Program Files (x86)\sox-14-4-2\" + CurrentExe 
     EndIf
@@ -183,10 +186,42 @@ EndProcedure
 Procedure DrawWaveform(FileName.s)
   Protected File = ReadFile(#PB_Any, FileName)
   If Not File : ProcedureReturn : EndIf
-  
-  FileSeek(File, 44) ; Hop over WAV header
-  Protected FileSize = Lof(File) - 44
-  
+
+  ; Gennemgå RIFF-chunks og find "fmt " og "data" i stedet for at antage en 44-byte header
+  Protected FormatTag, Bits, BlockAlign, BytesPerSample
+  Protected DataStart.q, DataSize.q, ChunkID.l, ChunkSize.q, NextChunk.q
+  If ReadLong(File) = $46464952 ; "RIFF"
+    ReadLong(File)
+    If ReadLong(File) = $45564157 ; "WAVE"
+      While Loc(File) + 8 <= Lof(File)
+        ChunkID = ReadLong(File)
+        ChunkSize = ReadLong(File) & $FFFFFFFF
+        NextChunk = Loc(File) + ChunkSize + (ChunkSize & 1)
+        Select ChunkID
+          Case $20746D66 ; "fmt "
+            FormatTag = ReadUnicodeCharacter(File)
+            ReadUnicodeCharacter(File) : ReadLong(File) : ReadLong(File) ; Kanaler, sample rate, byte rate
+            BlockAlign = ReadUnicodeCharacter(File)
+            Bits = ReadUnicodeCharacter(File)
+          Case $61746164 ; "data"
+            DataStart = Loc(File)
+            DataSize = ChunkSize
+            If DataStart + DataSize > Lof(File) : DataSize = Lof(File) - DataStart : EndIf
+            Break
+        EndSelect
+        FileSeek(File, NextChunk)
+      Wend
+    EndIf
+  EndIf
+
+  ; Kun 16/24-bit PCM understøttes (1 = PCM, $FFFE = WAVE_FORMAT_EXTENSIBLE)
+  If (FormatTag = 1 Or FormatTag = $FFFE) And (Bits = 16 Or Bits = 24)
+    BytesPerSample = Bits / 8
+  EndIf
+  If BlockAlign < BytesPerSample : BytesPerSample = 0 : EndIf
+  Protected FileSize.q = 0
+  If BytesPerSample > 0 And DataStart > 0 : FileSize = DataSize : EndIf
+
   If StartDrawing(CanvasOutput(#CanvasWave))
     ; --- DPI FIX: Brug altid OutputWidth/Height inde i StartDrawing ---
     Protected W = OutputWidth()
@@ -195,28 +230,29 @@ Procedure DrawWaveform(FileName.s)
     ; 1. Mal HELE det fysiske areal mørkt
     Box(0, 0, W, H, RGB(30, 30, 30))
     
-    If FileSize > 0
+    If FileSize > 0 And FileSize >= BlockAlign
       Protected x.i, i.i
-      Protected.w PeakMin, PeakMax, Sample
-      
-      ; Beregn bytes pr. fysisk pixel
-      Protected BytesPerPixel.f = FileSize / W
-      
+      Protected.l PeakMin, PeakMax, Sample
+
+      ; Arbejd i hele frames, så vi aldrig læser midt i en sample
+      Protected Frames.q = FileSize / BlockAlign
+      Protected SeekPos.q
+
       For x = 0 To W - 1
         PeakMin = 0 : PeakMax = 0
-        
-        ; Find position i filen for denne fysiske pixel
-        Protected SeekPos.q = 44 + (x * BytesPerPixel)
-        If SeekPos > Lof(File) - 2 : SeekPos = Lof(File) - 2 : EndIf
-        FileSeek(File, SeekPos)
-        
-        ; Tjek en blok samples for at finde peaks
-        For i = 1 To 32 Step 2
-          If Loc(File) < Lof(File) - 1
+
+        ; Tjek en blok frames (første kanal) for at finde peaks
+        For i = 0 To 15
+          SeekPos = DataStart + ((x * Frames) / W + i) * BlockAlign
+          If SeekPos + BytesPerSample > DataStart + FileSize : Break : EndIf
+          FileSeek(File, SeekPos)
+          If BytesPerSample = 2
             Sample = ReadWord(File)
-            If Sample > PeakMax : PeakMax = Sample : EndIf
-            If Sample < PeakMin : PeakMin = Sample : EndIf
+          Else ; 24-bit: skalér ned til 16-bit område
+            Sample = (ReadUnicodeCharacter(File) | (ReadByte(File) << 16)) >> 8
           EndIf
+          If Sample > PeakMax : PeakMax = Sample : EndIf
+          If Sample < PeakMin : PeakMin = Sample : EndIf
         Next i
         
         ; Skalér til den fysiske højde (H)
@@ -269,6 +305,20 @@ Procedure ConversionThread(*Data.ConversionData)
   FreeMemory(*Data)
 EndProcedure
 
+Procedure UpdateSoXStatus()
+  If G_SoXPath <> ""
+    If FindString(LCase(G_SoXPath), "sox_ng.exe")
+      SetGadgetText(#TxtStatus, Lg("StatusReadyNG"))
+    Else
+      SetGadgetText(#TxtStatus, Lg("StatusReady"))
+    EndIf
+    SetGadgetColor(#TxtStatus, #PB_Gadget_FrontColor, hAccent)
+  Else
+    SetGadgetText(#TxtStatus, Lg("StatusError"))
+    SetGadgetColor(#TxtStatus, #PB_Gadget_FrontColor, RGB(255, 0, 0))
+  EndIf
+EndProcedure
+
 Procedure SetLanguage(Language.s)
   ClearMap(Lg())
   Select Language
@@ -309,6 +359,7 @@ Procedure SetLanguage(Language.s)
       Lg("MsgOutputError") = "Could not create the output folder."
       Lg("WordOf") = "of"
       Lg("BtnStart") = "START CONVERSION" : Lg("MsgNoFiles") = "Add files first!"
+      Lg("AboutTxt") = "Conversion for hardware samplers." + #LF$ + "Open Source (MIT) - tristan202"
   EndSelect
   
   If IsWindow(#WinMain)
@@ -332,11 +383,12 @@ Procedure SetLanguage(Language.s)
     SetGadgetText(G_LblChannels, Lg("LabelCH"))
     SetGadgetText(G_LblDevice, Lg("LabelDev"))
     SetGadgetText(#TxtOutputDir, G_OutputDir)
-    If G_SoXPath = "" : SetGadgetText(#TxtStatus, Lg("StatusError")) : Else : SetGadgetText(#TxtStatus, Lg("StatusReady")) : EndIf
+    UpdateSoXStatus()
   EndIf
 EndProcedure
 
 Procedure SaveSettings()
+  If FileSize(G_ConfigDir) <> -2 : CreateDirectory(G_ConfigDir) : EndIf
   If CreatePreferences(G_IniFile)
     PreferenceGroup("Settings")
     WritePreferenceString("OutputDir", EnsureTrailingSlash(G_OutputDir))
@@ -355,7 +407,12 @@ Procedure SaveSettings()
 EndProcedure
 
 Procedure LoadSettings()
-  If OpenPreferences(G_IniFile)
+  ; Ældre versioner gemte ini-filen ved siden af programmet - brug den, hvis der ikke findes en ny
+  Protected IniPath.s = G_IniFile
+  If FileSize(IniPath) < 0 And FileSize(G_AppDir + "lofi_config.ini") >= 0
+    IniPath = G_AppDir + "lofi_config.ini"
+  EndIf
+  If OpenPreferences(IniPath)
     PreferenceGroup("Settings")
     G_OutputDir = EnsureTrailingSlash(ReadPreferenceString("OutputDir", G_OutputDir))
     G_CurrentLanguage = ReadPreferenceString("Language", "English")
@@ -468,19 +525,6 @@ If OpenWindow(#WinMain, 0, 0, 700, 880, "", #PB_Window_SystemMenu | #PB_Window_S
   SetGadgetState(#CheckOpenDir, G_SelOpenDir)
   SetLanguage(G_CurrentLanguage)
   
-  ; SoX Status Check
-  If G_SoXPath <> ""
-    If FindString(LCase(G_SoXPath), "sox_ng.exe")
-      SetGadgetText(#TxtStatus, Lg("StatusReadyNG"))
-    Else
-      SetGadgetText(#TxtStatus, Lg("StatusReady"))
-    EndIf
-    SetGadgetColor(#TxtStatus, #PB_Gadget_FrontColor, hAccent)
-  Else
-    SetGadgetText(#TxtStatus, Lg("StatusError"))
-    SetGadgetColor(#TxtStatus, #PB_Gadget_FrontColor, RGB(255, 0, 0))
-  EndIf
-  
   SetWindowCallback(@MyWindowCallback())
   If StartDrawing(CanvasOutput(#CanvasWave))
     Box(0, 0, OutputWidth(), OutputHeight(), RGB(30, 30, 30))
@@ -512,7 +556,10 @@ If OpenWindow(#WinMain, 0, 0, 700, 880, "", #PB_Window_SystemMenu | #PB_Window_S
       Case #PB_Event_WindowDrop
         FileList$ = EventDropFiles()
         Count = CountString(FileList$, #LF$) + 1
-        For i = 1 To Count : AddToFileList(StringField(FileList$, i, #LF$)) : Next
+        For i = 1 To Count
+          Dir$ = StringField(FileList$, i, #LF$)
+          If FileSize(Dir$) = -2 : ScanDirectory(Dir$) : Else : AddToFileList(Dir$) : EndIf
+        Next
       Case #PB_Event_Gadget
         Select EventGadget()
           Case #ListFiles
@@ -564,7 +611,7 @@ If OpenWindow(#WinMain, 0, 0, 700, 880, "", #PB_Window_SystemMenu | #PB_Window_S
           Case #BtnConvert
             If G_SoXPath = ""
               G_SoXPath = OpenFileRequester("Find SoX / SoX-NG...", "C:\", "SoX (sox.exe, sox_ng.exe)|sox.exe;sox_ng.exe", 0)
-              If G_SoXPath <> "" : SaveSettings() : Else : Continue : EndIf
+              If G_SoXPath <> "" : SaveSettings() : UpdateSoXStatus() : Else : Continue : EndIf
             EndIf
             If ListSize(FilesToProcess()) = 0 : MessageRequester("!", Lg("MsgNoFiles")) : Continue : EndIf
             Define *ThreadData.ConversionData = AllocateMemory(SizeOf(ConversionData))
