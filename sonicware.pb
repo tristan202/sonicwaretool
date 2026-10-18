@@ -1,5 +1,4 @@
-EnableExplicit
-InitSound()
+ÔªøEnableExplicit
 
 ; --- IDs, Events og Indstillinger ---
 Enumeration
@@ -187,7 +186,7 @@ Procedure DrawWaveform(FileName.s)
   Protected File = ReadFile(#PB_Any, FileName)
   If Not File : ProcedureReturn : EndIf
 
-  ; GennemgÂ RIFF-chunks og find "fmt " og "data" i stedet for at antage en 44-byte header
+  ; Gennemg√• RIFF-chunks og find "fmt " og "data" i stedet for at antage en 44-byte header
   Protected FormatTag, Bits, BlockAlign, BytesPerSample
   Protected DataStart.q, DataSize.q, ChunkID.l, ChunkSize.q, NextChunk.q
   If ReadLong(File) = $46464952 ; "RIFF"
@@ -214,7 +213,7 @@ Procedure DrawWaveform(FileName.s)
     EndIf
   EndIf
 
-  ; Kun 16/24-bit PCM underst¯ttes (1 = PCM, $FFFE = WAVE_FORMAT_EXTENSIBLE)
+  ; Kun 16/24-bit PCM underst√∏ttes (1 = PCM, $FFFE = WAVE_FORMAT_EXTENSIBLE)
   If (FormatTag = 1 Or FormatTag = $FFFE) And (Bits = 16 Or Bits = 24)
     BytesPerSample = Bits / 8
   EndIf
@@ -227,35 +226,35 @@ Procedure DrawWaveform(FileName.s)
     Protected W = OutputWidth()
     Protected H = OutputHeight()
     
-    ; 1. Mal HELE det fysiske areal m¯rkt
+    ; 1. Mal HELE det fysiske areal m√∏rkt
     Box(0, 0, W, H, RGB(30, 30, 30))
     
     If FileSize > 0 And FileSize >= BlockAlign
       Protected x.i, i.i
       Protected.l PeakMin, PeakMax, Sample
 
-      ; Arbejd i hele frames, sÂ vi aldrig lÊser midt i en sample
+      ; Arbejd i hele frames, s√• vi aldrig l√¶ser midt i en sample
       Protected Frames.q = FileSize / BlockAlign
       Protected SeekPos.q
 
       For x = 0 To W - 1
         PeakMin = 0 : PeakMax = 0
 
-        ; Tjek en blok frames (f¯rste kanal) for at finde peaks
+        ; Tjek en blok frames (f√∏rste kanal) for at finde peaks
         For i = 0 To 15
           SeekPos = DataStart + ((x * Frames) / W + i) * BlockAlign
           If SeekPos + BytesPerSample > DataStart + FileSize : Break : EndIf
           FileSeek(File, SeekPos)
           If BytesPerSample = 2
             Sample = ReadWord(File)
-          Else ; 24-bit: skalÈr ned til 16-bit omrÂde
+          Else ; 24-bit: skal√©r ned til 16-bit omr√•de
             Sample = (ReadUnicodeCharacter(File) | (ReadByte(File) << 16)) >> 8
           EndIf
           If Sample > PeakMax : PeakMax = Sample : EndIf
           If Sample < PeakMin : PeakMin = Sample : EndIf
         Next i
         
-        ; SkalÈr til den fysiske h¯jde (H)
+        ; Skal√©r til den fysiske h√∏jde (H)
         Protected y1 = (H / 2) - (PeakMax * (H / 2) / 32768)
         Protected y2 = (H / 2) - (PeakMin * (H / 2) / 32768)
         
@@ -271,6 +270,25 @@ Procedure DrawWaveform(FileName.s)
   EndIf
   
   CloseFile(File)
+EndProcedure
+
+Procedure ClearWaveform()
+  If StartDrawing(CanvasOutput(#CanvasWave))
+    Box(0, 0, OutputWidth(), OutputHeight(), RGB(30, 30, 30))
+    StopDrawing()
+  EndIf
+EndProcedure
+
+Procedure.s SelectedFilePath()
+  Protected Selected = GetGadgetState(#ListFiles)
+  If Selected = -1 : ProcedureReturn "" : EndIf
+  ProcedureReturn EnsureTrailingSlash(GetGadgetItemText(#ListFiles, Selected, 1)) + GetGadgetItemText(#ListFiles, Selected, 0)
+EndProcedure
+
+Procedure PlayFile(FileName.s)
+  mciSendString_("close myaudio", 0, 0, 0)
+  mciSendString_("open " + #DQUOTE$ + FileName + #DQUOTE$ + " alias myaudio", 0, 0, 0)
+  mciSendString_("play myaudio", 0, 0, 0)
 EndProcedure
 
 Procedure ConversionThread(*Data.ConversionData)
@@ -326,20 +344,20 @@ Procedure SetLanguage(Language.s)
       Lg("Title") = "Sonicware Lofi-12 XT Tool v1.6"
       Lg("ListHeader") = "SAMPLES KLAR TIL KONVERTERING"
       Lg("ColName") = "Filnavn" : Lg("ColPath") = "Kilde-sti"
-      Lg("BtnFiles") = "Tilf¯j Filer" : Lg("BtnFolder") = "Tilf¯j Mappe" : Lg("BtnClear") = "Ryd Liste"
+      Lg("BtnFiles") = "Tilf√∏j Filer" : Lg("BtnFolder") = "Tilf√∏j Mappe" : Lg("BtnClear") = "Ryd Liste"
       Lg("FrameOut") = "OUTPUT DESTINATION" : Lg("BtnChange") = "Skift Mappe"
       Lg("FrameSet") = "HARDWARE INDSTILLINGER" : Lg("LabelSR") = "Sample Rate:"
       Lg("LabelBD") = "Bit-dybde:" : Lg("LabelCH") = "Kanaler:" : Lg("CheckNorm") = "Normalize"
-      Lg("CheckTrim") = "Auto-Trim" : Lg("CheckReverse") = "Reverse" : Lg("CheckOpenDir") = "≈bn mappe nÂr fÊrdig"
-      Lg("LabelDev") = "MÂl-hardware:"
+      Lg("CheckTrim") = "Auto-Trim" : Lg("CheckReverse") = "Reverse" : Lg("CheckOpenDir") = "√Öbn mappe n√•r f√¶rdig"
+      Lg("LabelDev") = "M√•l-hardware:"
       Lg("StatusReady") = "Klar (SoX fundet)" : Lg("StatusError") = "FEJL: sox.exe ikke fundet!"
       Lg("StatusReadyNG") = "Klar (SoX-NG fundet)"
       Lg("StatusConverting") = "Konverterer..."
-      Lg("MsgDone") = "FÊrdig!"
-      Lg("MsgDoneErrors") = "FÊrdig med %ERRORS% fejl"
+      Lg("MsgDone") = "F√¶rdig!"
+      Lg("MsgDoneErrors") = "F√¶rdig med %ERRORS% fejl"
       Lg("MsgOutputError") = "Output-mappen kunne ikke oprettes."
       Lg("WordOf") = "af"
-      Lg("BtnStart") = "START KONVERTERING" : Lg("MsgNoFiles") = "VÊlg filer f¯rst!"
+      Lg("BtnStart") = "START KONVERTERING" : Lg("MsgNoFiles") = "V√¶lg filer f√∏rst!"
       Lg("AboutTxt") = "Konvertering til hardware samplere." + #LF$ + "Open Source (MIT) - tristan202"
     Default ; English
       Lg("Title") = "Sonicware Lofi-12 XT Tool v1.6"
@@ -407,7 +425,7 @@ Procedure SaveSettings()
 EndProcedure
 
 Procedure LoadSettings()
-  ; ∆ldre versioner gemte ini-filen ved siden af programmet - brug den, hvis der ikke findes en ny
+  ; √Üldre versioner gemte ini-filen ved siden af programmet - brug den, hvis der ikke findes en ny
   Protected IniPath.s = G_IniFile
   If FileSize(IniPath) < 0 And FileSize(G_AppDir + "lofi_config.ini") >= 0
     IniPath = G_AppDir + "lofi_config.ini"
@@ -526,17 +544,14 @@ If OpenWindow(#WinMain, 0, 0, 700, 880, "", #PB_Window_SystemMenu | #PB_Window_S
   SetLanguage(G_CurrentLanguage)
   
   SetWindowCallback(@MyWindowCallback())
-  If StartDrawing(CanvasOutput(#CanvasWave))
-    Box(0, 0, OutputWidth(), OutputHeight(), RGB(30, 30, 30))
-    StopDrawing()
-  EndIf
+  ClearWaveform()
 
-  Define Event, i, FileList$, Dir$, Count
+  Define Event, i, FileList$, Dir$, Count, TotalFiles, File.s
   Repeat
     Event = WaitWindowEvent()
     Select Event
       Case #Event_ConversionProgress
-        SetGadgetText(#TxtStatus, Str(EventData()) + " " + Lg("WordOf") + " " + Str(ListSize(FilesToProcess())))
+        SetGadgetText(#TxtStatus, Str(EventData()) + " " + Lg("WordOf") + " " + Str(TotalFiles))
       Case #Event_ConversionFinished
         DisableGadget(#BtnConvert, 0)
         If EventData() > 0
@@ -563,16 +578,12 @@ If OpenWindow(#WinMain, 0, 0, 700, 880, "", #PB_Window_SystemMenu | #PB_Window_S
       Case #PB_Event_Gadget
         Select EventGadget()
           Case #ListFiles
-            If EventType() = #PB_EventType_LeftClick Or EventType() = #PB_EventType_Change
-              Define Selected = GetGadgetState(#ListFiles)
-              If Selected <> -1
-                Define Path.s = GetGadgetItemText(#ListFiles, Selected, 1)
-                Define File.s = GetGadgetItemText(#ListFiles, Selected, 0)
-                If Right(Path, 1) <> "\" : Path + "\" : EndIf
-                If LCase(GetExtensionPart(File)) = "wav" : DrawWaveform(Path + File) : EndIf
-                mciSendString_("close myaudio", 0, 0, 0)
-                mciSendString_("open " + #DQUOTE$ + Path + File + #DQUOTE$ + " alias myaudio", 0, 0, 0)
-                mciSendString_("play myaudio", 0, 0, 0)
+            ; Kun Change: LeftClick og Change kommer begge ved et klik, s√• filen blev afspillet to gange
+            If EventType() = #PB_EventType_Change
+              Define File.s = SelectedFilePath()
+              If File <> ""
+                If LCase(GetExtensionPart(File)) = "wav" : DrawWaveform(File) : Else : ClearWaveform() : EndIf
+                PlayFile(File)
               EndIf
             EndIf
           Case #BtnAddFiles
@@ -582,28 +593,16 @@ If OpenWindow(#WinMain, 0, 0, 700, 880, "", #PB_Window_SystemMenu | #PB_Window_S
               If Count = 1 
                 AddToFileList(FileList$) 
               Else
-                Define BaseDir.s = StringField(FileList$, 1, "|")
-                If Right(BaseDir, 1) <> "\" : BaseDir + "\" : EndIf
+                Define BaseDir.s = EnsureTrailingSlash(StringField(FileList$, 1, "|"))
                 For i = 2 To Count : AddToFileList(BaseDir + StringField(FileList$, i, "|")) : Next
               EndIf
             EndIf
           Case #BtnPreview
-            Define Selected = GetGadgetState(#ListFiles)
-            If Selected <> -1
-              Define Path.s = GetGadgetItemText(#ListFiles, Selected, 1)
-              Define File.s = GetGadgetItemText(#ListFiles, Selected, 0)
-              If Right(Path, 1) <> "\" : Path + "\" : EndIf
-              mciSendString_("close myaudio", 0, 0, 0)
-              mciSendString_("open " + #DQUOTE$ + Path + File + #DQUOTE$ + " alias myaudio", 0, 0, 0)
-              mciSendString_("play myaudio", 0, 0, 0)
-            EndIf
+            File = SelectedFilePath()
+            If File <> "" : PlayFile(File) : EndIf
           Case #BtnStop : mciSendString_("stop myaudio", 0, 0, 0) : mciSendString_("close myaudio", 0, 0, 0)
           Case #BtnClear
-            ClearList(FilesToProcess()) : ClearGadgetItems(#ListFiles)
-            If StartDrawing(CanvasOutput(#CanvasWave))
-              Box(0, 0, OutputWidth(), OutputHeight(), RGB(30, 30, 30))
-              StopDrawing()
-            EndIf
+            ClearList(FilesToProcess()) : ClearGadgetItems(#ListFiles) : ClearWaveform()
           Case #BtnAddFolder : Dir$ = PathRequester(Lg("BtnFolder"), "") : If Dir$ : ScanDirectory(Dir$) : EndIf
           Case #BtnSetOutputDir : Dir$ = PathRequester(Lg("BtnChange"), G_OutputDir) : If Dir$ : G_OutputDir = EnsureTrailingSlash(Dir$) : SetGadgetText(#TxtOutputDir, G_OutputDir) : SaveSettings() : EndIf
           Case #ComboDevice : ApplyDeviceProfile(GetGadgetText(#ComboDevice)) : SaveSettings()
@@ -630,6 +629,7 @@ If OpenWindow(#WinMain, 0, 0, 700, 880, "", #PB_Window_SystemMenu | #PB_Window_S
             If GetGadgetState(#CheckAutoTrim) : *ThreadData\AutoTrim = " silence 1 0.1 1% reverse silence 1 0.1 1% reverse" : EndIf
             If GetGadgetState(#CheckReverse) : *ThreadData\Reverse = " reverse" : EndIf
             ForEach FilesToProcess() : AddElement(*ThreadData\Files()) : *ThreadData\Files() = FilesToProcess() : Next
+            TotalFiles = ListSize(*ThreadData\Files()) ; Listen kan √¶ndres under konverteringen
             DisableGadget(#BtnConvert, 1) : SetGadgetText(#TxtStatus, Lg("StatusConverting")) : CreateThread(@ConversionThread(), *ThreadData)
         EndSelect
       Case #PB_Event_CloseWindow : mciSendString_("close all", 0, 0, 0) : End
