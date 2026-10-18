@@ -59,9 +59,9 @@ Settings are stored in `%APPDATA%\SonicwareTool\lofi_config.ini`. Converted file
 
 ## 📜 License
 
-This project is licensed under the MIT License.
+This project is licensed under the [GNU General Public License v3.0](LICENSE).
 
-Open Source (MIT) - You are free to use, copy, modify, merge, publish, and distribute this software for any purpose, personal or commercial.
+You are free to use, study, modify and distribute this software, including commercially. If you distribute it or a modified version, you must make the source code available under the same license.
 
 ## 👤 Credits
 

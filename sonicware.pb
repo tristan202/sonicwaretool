@@ -358,7 +358,7 @@ Procedure SetLanguage(Language.s)
       Lg("MsgOutputError") = "Output-mappen kunne ikke oprettes."
       Lg("WordOf") = "af"
       Lg("BtnStart") = "START KONVERTERING" : Lg("MsgNoFiles") = "Vælg filer først!"
-      Lg("AboutTxt") = "Konvertering til hardware samplere." + #LF$ + "Open Source (MIT) - tristan202"
+      Lg("AboutTxt") = "Konvertering til hardware samplere." + #LF$ + "Open Source (GPL-3.0) - tristan202"
     Default ; English
       Lg("Title") = "Sonicware Lofi-12 XT Tool v1.6"
       Lg("ListHeader") = "SAMPLES READY FOR CONVERSION"
@@ -377,7 +377,7 @@ Procedure SetLanguage(Language.s)
       Lg("MsgOutputError") = "Could not create the output folder."
       Lg("WordOf") = "of"
       Lg("BtnStart") = "START CONVERSION" : Lg("MsgNoFiles") = "Add files first!"
-      Lg("AboutTxt") = "Conversion for hardware samplers." + #LF$ + "Open Source (MIT) - tristan202"
+      Lg("AboutTxt") = "Conversion for hardware samplers." + #LF$ + "Open Source (GPL-3.0) - tristan202"
   EndSelect
   
   If IsWindow(#WinMain)
