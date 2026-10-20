@@ -22,7 +22,7 @@ A high-speed batch audio converter specifically designed for hardware samplers l
 - **Reverse:** Reverses samples during conversion (output files get a `_rev` suffix).
 - **Preview:** Click a file to play it and see its waveform (waveform display supports 16/24-bit PCM WAV).
 - **Blazing fast:** Uses the SoX engine and converts in the background, so the window stays responsive.
-- **Multilingual:** English and Danish (switch via the *Language* menu).
+- **Multilingual:** English, Danish, German, Spanish, French, Italian and Swedish (switch via the *Language* menu).
 - **Open source:** Free to use, modify, and distribute.
 
 Output is always WAV.

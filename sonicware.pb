@@ -26,6 +26,11 @@ Enumeration
   #CanvasWave
   #Menu_Language_EN
   #Menu_Language_DK
+  #Menu_Language_DE
+  #Menu_Language_ES
+  #Menu_Language_FR
+  #Menu_Language_IT
+  #Menu_Language_SV
   #Menu_About  
   #Event_ConversionProgress = #PB_Event_FirstCustomValue
   #Event_ConversionFinished
@@ -339,16 +344,17 @@ EndProcedure
 
 Procedure SetLanguage(Language.s)
   ClearMap(Lg())
+  ; Normalize, Auto-Trim og Reverse holdes på engelsk i alle sprog (gængse lydbegreber, og checkboksene er smalle)
+  Lg("CheckNorm") = "Normalize" : Lg("CheckTrim") = "Auto-Trim" : Lg("CheckReverse") = "Reverse"
   Select Language
     Case "Dansk"
-      Lg("Title") = "Sonicware Lofi-12 XT Tool v1.6"
       Lg("ListHeader") = "SAMPLES KLAR TIL KONVERTERING"
       Lg("ColName") = "Filnavn" : Lg("ColPath") = "Kilde-sti"
       Lg("BtnFiles") = "Tilføj Filer" : Lg("BtnFolder") = "Tilføj Mappe" : Lg("BtnClear") = "Ryd Liste"
       Lg("FrameOut") = "OUTPUT DESTINATION" : Lg("BtnChange") = "Skift Mappe"
       Lg("FrameSet") = "HARDWARE INDSTILLINGER" : Lg("LabelSR") = "Sample Rate:"
-      Lg("LabelBD") = "Bit-dybde:" : Lg("LabelCH") = "Kanaler:" : Lg("CheckNorm") = "Normalize"
-      Lg("CheckTrim") = "Auto-Trim" : Lg("CheckReverse") = "Reverse" : Lg("CheckOpenDir") = "Åbn mappe når færdig"
+      Lg("LabelBD") = "Bit-dybde:" : Lg("LabelCH") = "Kanaler:"
+      Lg("CheckOpenDir") = "Åbn mappe når færdig"
       Lg("LabelDev") = "Mål-hardware:"
       Lg("StatusReady") = "Klar (SoX fundet)" : Lg("StatusError") = "FEJL: sox.exe ikke fundet!"
       Lg("StatusReadyNG") = "Klar (SoX-NG fundet)"
@@ -358,16 +364,117 @@ Procedure SetLanguage(Language.s)
       Lg("MsgOutputError") = "Output-mappen kunne ikke oprettes."
       Lg("WordOf") = "af"
       Lg("BtnStart") = "START KONVERTERING" : Lg("MsgNoFiles") = "Vælg filer først!"
-      Lg("AboutTxt") = "Konvertering til hardware samplere." + #LF$ + "Open Source (GPL-3.0) - tristan202"
+      Lg("AboutTxt") = "Konvertering til hardware samplere."
+      Lg("MenuLang") = "Sprog" : Lg("MenuHelp") = "Hjælp" : Lg("MenuAbout") = "Om"
+      Lg("TipPlay") = "Afspil sample" : Lg("TipStop") = "Stop afspilning"
+    Case "Deutsch"
+      Lg("ListHeader") = "SAMPLES BEREIT ZUR KONVERTIERUNG"
+      Lg("ColName") = "Dateiname" : Lg("ColPath") = "Quellpfad"
+      Lg("BtnFiles") = "+ Dateien" : Lg("BtnFolder") = "+ Ordner" : Lg("BtnClear") = "Liste leeren"
+      Lg("FrameOut") = "AUSGABEZIEL" : Lg("BtnChange") = "Ordner ändern"
+      Lg("FrameSet") = "HARDWARE-EINSTELLUNGEN" : Lg("LabelSR") = "Samplerate:"
+      Lg("LabelBD") = "Bittiefe:" : Lg("LabelCH") = "Kanäle:"
+      Lg("CheckOpenDir") = "Ordner nach Abschluss öffnen"
+      Lg("LabelDev") = "Ziel-Hardware:"
+      Lg("StatusReady") = "Bereit (SoX gefunden)" : Lg("StatusError") = "FEHLER: sox.exe nicht gefunden!"
+      Lg("StatusReadyNG") = "Bereit (SoX-NG gefunden)"
+      Lg("StatusConverting") = "Konvertiere..."
+      Lg("MsgDone") = "Fertig!"
+      Lg("MsgDoneErrors") = "Fertig mit %ERRORS% Fehler(n)"
+      Lg("MsgOutputError") = "Der Ausgabeordner konnte nicht erstellt werden."
+      Lg("WordOf") = "von"
+      Lg("BtnStart") = "KONVERTIERUNG STARTEN" : Lg("MsgNoFiles") = "Bitte zuerst Dateien hinzufügen!"
+      Lg("AboutTxt") = "Konvertierung für Hardware-Sampler."
+      Lg("MenuLang") = "Sprache" : Lg("MenuHelp") = "Hilfe" : Lg("MenuAbout") = "Über"
+      Lg("TipPlay") = "Sample abspielen" : Lg("TipStop") = "Wiedergabe stoppen"
+    Case "Espanol"
+      Lg("ListHeader") = "SAMPLES LISTOS PARA CONVERTIR"
+      Lg("ColName") = "Archivo" : Lg("ColPath") = "Ruta de origen"
+      Lg("BtnFiles") = "+ Archivos" : Lg("BtnFolder") = "+ Carpeta" : Lg("BtnClear") = "Vaciar lista"
+      Lg("FrameOut") = "DESTINO DE SALIDA" : Lg("BtnChange") = "Cambiar carpeta"
+      Lg("FrameSet") = "AJUSTES DE HARDWARE" : Lg("LabelSR") = "Frecuencia:"
+      Lg("LabelBD") = "Profundidad:" : Lg("LabelCH") = "Canales:"
+      Lg("CheckOpenDir") = "Abrir carpeta al terminar"
+      Lg("LabelDev") = "Equipo destino:"
+      Lg("StatusReady") = "Listo (SoX encontrado)" : Lg("StatusError") = "ERROR: ¡no se encontró sox.exe!"
+      Lg("StatusReadyNG") = "Listo (SoX-NG encontrado)"
+      Lg("StatusConverting") = "Convirtiendo..."
+      Lg("MsgDone") = "¡Hecho!"
+      Lg("MsgDoneErrors") = "Terminado con %ERRORS% error(es)"
+      Lg("MsgOutputError") = "No se pudo crear la carpeta de salida."
+      Lg("WordOf") = "de"
+      Lg("BtnStart") = "INICIAR CONVERSIÓN" : Lg("MsgNoFiles") = "¡Añade archivos primero!"
+      Lg("AboutTxt") = "Conversión para samplers de hardware."
+      Lg("MenuLang") = "Idioma" : Lg("MenuHelp") = "Ayuda" : Lg("MenuAbout") = "Acerca de"
+      Lg("TipPlay") = "Reproducir sample" : Lg("TipStop") = "Detener reproducción"
+    Case "Francais"
+      Lg("ListHeader") = "SAMPLES PRÊTS POUR LA CONVERSION"
+      Lg("ColName") = "Nom du fichier" : Lg("ColPath") = "Chemin source"
+      Lg("BtnFiles") = "+ Fichiers" : Lg("BtnFolder") = "+ Dossier" : Lg("BtnClear") = "Vider la liste"
+      Lg("FrameOut") = "DOSSIER DE SORTIE" : Lg("BtnChange") = "Parcourir..."
+      Lg("FrameSet") = "RÉGLAGES MATÉRIEL" : Lg("LabelSR") = "Fréquence :"
+      Lg("LabelBD") = "Résolution :" : Lg("LabelCH") = "Canaux :"
+      Lg("CheckOpenDir") = "Ouvrir le dossier à la fin"
+      Lg("LabelDev") = "Matériel cible :"
+      Lg("StatusReady") = "Prêt (SoX trouvé)" : Lg("StatusError") = "ERREUR : sox.exe introuvable !"
+      Lg("StatusReadyNG") = "Prêt (SoX-NG trouvé)"
+      Lg("StatusConverting") = "Conversion..."
+      Lg("MsgDone") = "Terminé !"
+      Lg("MsgDoneErrors") = "Terminé avec %ERRORS% erreur(s)"
+      Lg("MsgOutputError") = "Impossible de créer le dossier de sortie."
+      Lg("WordOf") = "sur"
+      Lg("BtnStart") = "DÉMARRER LA CONVERSION" : Lg("MsgNoFiles") = "Ajoutez d'abord des fichiers !"
+      Lg("AboutTxt") = "Conversion pour samplers matériels."
+      Lg("MenuLang") = "Langue" : Lg("MenuHelp") = "Aide" : Lg("MenuAbout") = "À propos"
+      Lg("TipPlay") = "Écouter le sample" : Lg("TipStop") = "Arrêter la lecture"
+    Case "Italiano"
+      Lg("ListHeader") = "SAMPLE PRONTI PER LA CONVERSIONE"
+      Lg("ColName") = "Nome file" : Lg("ColPath") = "Percorso origine"
+      Lg("BtnFiles") = "+ File" : Lg("BtnFolder") = "+ Cartella" : Lg("BtnClear") = "Svuota lista"
+      Lg("FrameOut") = "DESTINAZIONE OUTPUT" : Lg("BtnChange") = "Cambia cartella"
+      Lg("FrameSet") = "IMPOSTAZIONI HARDWARE" : Lg("LabelSR") = "Frequenza:"
+      Lg("LabelBD") = "Profondità:" : Lg("LabelCH") = "Canali:"
+      Lg("CheckOpenDir") = "Apri cartella al termine"
+      Lg("LabelDev") = "Dispositivo:"
+      Lg("StatusReady") = "Pronto (SoX trovato)" : Lg("StatusError") = "ERRORE: sox.exe non trovato!"
+      Lg("StatusReadyNG") = "Pronto (SoX-NG trovato)"
+      Lg("StatusConverting") = "Conversione in corso..."
+      Lg("MsgDone") = "Fatto!"
+      Lg("MsgDoneErrors") = "Completato con %ERRORS% errore/i"
+      Lg("MsgOutputError") = "Impossibile creare la cartella di output."
+      Lg("WordOf") = "di"
+      Lg("BtnStart") = "AVVIA CONVERSIONE" : Lg("MsgNoFiles") = "Aggiungi prima dei file!"
+      Lg("AboutTxt") = "Conversione per campionatori hardware."
+      Lg("MenuLang") = "Lingua" : Lg("MenuHelp") = "Aiuto" : Lg("MenuAbout") = "Informazioni"
+      Lg("TipPlay") = "Riproduci sample" : Lg("TipStop") = "Interrompi riproduzione"
+    Case "Svenska"
+      Lg("ListHeader") = "SAMPLES REDO FÖR KONVERTERING"
+      Lg("ColName") = "Filnamn" : Lg("ColPath") = "Källsökväg"
+      Lg("BtnFiles") = "+ Filer" : Lg("BtnFolder") = "+ Mapp" : Lg("BtnClear") = "Töm listan"
+      Lg("FrameOut") = "UTDATAMAPP" : Lg("BtnChange") = "Byt mapp"
+      Lg("FrameSet") = "HÅRDVARUINSTÄLLNINGAR" : Lg("LabelSR") = "Samplerate:"
+      Lg("LabelBD") = "Bitdjup:" : Lg("LabelCH") = "Kanaler:"
+      Lg("CheckOpenDir") = "Öppna mappen när klar"
+      Lg("LabelDev") = "Målhårdvara:"
+      Lg("StatusReady") = "Redo (SoX hittades)" : Lg("StatusError") = "FEL: sox.exe hittades inte!"
+      Lg("StatusReadyNG") = "Redo (SoX-NG hittades)"
+      Lg("StatusConverting") = "Konverterar..."
+      Lg("MsgDone") = "Klart!"
+      Lg("MsgDoneErrors") = "Klart med %ERRORS% fel"
+      Lg("MsgOutputError") = "Utdatamappen kunde inte skapas."
+      Lg("WordOf") = "av"
+      Lg("BtnStart") = "STARTA KONVERTERING" : Lg("MsgNoFiles") = "Lägg till filer först!"
+      Lg("AboutTxt") = "Konvertering för hårdvarusamplers."
+      Lg("MenuLang") = "Språk" : Lg("MenuHelp") = "Hjälp" : Lg("MenuAbout") = "Om"
+      Lg("TipPlay") = "Spela upp sample" : Lg("TipStop") = "Stoppa uppspelning"
     Default ; English
-      Lg("Title") = "Sonicware Lofi-12 XT Tool v1.6"
       Lg("ListHeader") = "SAMPLES READY FOR CONVERSION"
       Lg("ColName") = "Filename" : Lg("ColPath") = "Source path"
       Lg("BtnFiles") = "Add Files" : Lg("BtnFolder") = "Add Folder" : Lg("BtnClear") = "Clear List"
       Lg("FrameOut") = "OUTPUT DESTINATION" : Lg("BtnChange") = "Change Folder"
       Lg("FrameSet") = "HARDWARE SETTINGS" : Lg("LabelSR") = "Sample Rate:"
-      Lg("LabelBD") = "Bit-depth:" : Lg("LabelCH") = "Channels:" : Lg("CheckNorm") = "Normalize"
-      Lg("CheckTrim") = "Auto-Trim" : Lg("CheckReverse") = "Reverse" : Lg("CheckOpenDir") = "Open folder when done"
+      Lg("LabelBD") = "Bit-depth:" : Lg("LabelCH") = "Channels:"
+      Lg("CheckOpenDir") = "Open folder when done"
       Lg("LabelDev") = "Target Hardware:"
       Lg("StatusReady") = "Ready (SoX found)" : Lg("StatusError") = "ERROR: sox.exe not found!"
       Lg("StatusReadyNG") = "Ready (SoX-NG found)"
@@ -377,9 +484,13 @@ Procedure SetLanguage(Language.s)
       Lg("MsgOutputError") = "Could not create the output folder."
       Lg("WordOf") = "of"
       Lg("BtnStart") = "START CONVERSION" : Lg("MsgNoFiles") = "Add files first!"
-      Lg("AboutTxt") = "Conversion for hardware samplers." + #LF$ + "Open Source (GPL-3.0) - tristan202"
+      Lg("AboutTxt") = "Conversion for hardware samplers."
+      Lg("MenuLang") = "Language" : Lg("MenuHelp") = "Help" : Lg("MenuAbout") = "About"
+      Lg("TipPlay") = "Play Sample" : Lg("TipStop") = "Stop Playback"
   EndSelect
-  
+  Lg("Title") = "Sonicware Lofi-12 XT Tool v1.6"
+  Lg("AboutTxt") + #LF$ + "Open Source (GPL-3.0) - tristan202"
+
   If IsWindow(#WinMain)
     SetWindowTitle(#WinMain, Lg("Title"))
     SetGadgetItemText(#ListFiles, -1, Lg("ColName"), 0)
@@ -401,6 +512,11 @@ Procedure SetLanguage(Language.s)
     SetGadgetText(G_LblChannels, Lg("LabelCH"))
     SetGadgetText(G_LblDevice, Lg("LabelDev"))
     SetGadgetText(#TxtOutputDir, G_OutputDir)
+    GadgetToolTip(#BtnPreview, Lg("TipPlay")) : GadgetToolTip(#BtnStop, Lg("TipStop"))
+    If IsMenu(0)
+      SetMenuTitleText(0, 0, Lg("MenuLang")) : SetMenuTitleText(0, 1, Lg("MenuHelp"))
+      SetMenuItemText(0, #Menu_About, Lg("MenuAbout"))
+    EndIf
     UpdateSoXStatus()
   EndIf
 EndProcedure
@@ -479,7 +595,10 @@ If OpenWindow(#WinMain, 0, 0, 700, 880, "", #PB_Window_SystemMenu | #PB_Window_S
   SetWindowColor(#WinMain, hBackColor)
   
   If CreateMenu(0, WindowID(#WinMain))
-    MenuTitle("Language") : MenuItem(#Menu_Language_EN, "English") : MenuItem(#Menu_Language_DK, "Dansk")
+    MenuTitle("Language")
+    MenuItem(#Menu_Language_EN, "English") : MenuItem(#Menu_Language_DK, "Dansk") : MenuItem(#Menu_Language_DE, "Deutsch")
+    MenuItem(#Menu_Language_ES, "Español") : MenuItem(#Menu_Language_FR, "Français") : MenuItem(#Menu_Language_IT, "Italiano")
+    MenuItem(#Menu_Language_SV, "Svenska")
     MenuTitle("Help") : MenuItem(#Menu_About, "About")
   EndIf
 
@@ -492,7 +611,6 @@ If OpenWindow(#WinMain, 0, 0, 700, 880, "", #PB_Window_SystemMenu | #PB_Window_S
   ButtonGadget(#BtnAddFolder, 125, 300, 110, 35, "")
   ButtonGadget(#BtnPreview, 240, 300, 40, 35, Chr($25B6))
   ButtonGadget(#BtnStop, 285, 300, 40, 35, Chr($25A0))
-  GadgetToolTip(#BtnPreview, "Play Sample") : GadgetToolTip(#BtnStop, "Stop Playback")
   ButtonGadget(#BtnClear, 580, 300, 110, 35, "")
   CanvasGadget(#CanvasWave, 10, 350, 680, 80)
   G_FrameOutput = TextGadget(#PB_Any, 10, 450, 680, 20, "") : ThemeGadget(G_FrameOutput, hAccent) : SetGadgetFont(G_FrameOutput, FontID(1))
@@ -564,10 +682,17 @@ If OpenWindow(#WinMain, 0, 0, 700, 880, "", #PB_Window_SystemMenu | #PB_Window_S
         If GetGadgetState(#CheckOpenDir) And FileSize(G_OutputDir) = -2 : RunProgram(G_OutputDir) : EndIf
       Case #PB_Event_Menu
         Select EventMenu()
-          Case #Menu_Language_EN : G_CurrentLanguage = "English" : SetLanguage("English") : SaveSettings()
-          Case #Menu_Language_DK : G_CurrentLanguage = "Dansk" : SetLanguage("Dansk") : SaveSettings()
-          Case #Menu_About : MessageRequester("About", Lg("AboutTxt"))
+          ; Sprognøglerne er uden accenter, så de gemmes sikkert i ini-filen
+          Case #Menu_Language_EN : G_CurrentLanguage = "English"
+          Case #Menu_Language_DK : G_CurrentLanguage = "Dansk"
+          Case #Menu_Language_DE : G_CurrentLanguage = "Deutsch"
+          Case #Menu_Language_ES : G_CurrentLanguage = "Espanol"
+          Case #Menu_Language_FR : G_CurrentLanguage = "Francais"
+          Case #Menu_Language_IT : G_CurrentLanguage = "Italiano"
+          Case #Menu_Language_SV : G_CurrentLanguage = "Svenska"
+          Case #Menu_About : MessageRequester(Lg("MenuAbout"), Lg("AboutTxt"))
         EndSelect
+        If EventMenu() <> #Menu_About : SetLanguage(G_CurrentLanguage) : SaveSettings() : EndIf
       Case #PB_Event_WindowDrop
         FileList$ = EventDropFiles()
         Count = CountString(FileList$, #LF$) + 1
