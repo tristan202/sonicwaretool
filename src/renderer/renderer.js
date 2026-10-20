@@ -81,6 +81,13 @@ function updateSoxStatus() {
   el.title = state.sox.path ? `${full}\n${state.sox.path}` : full;
 }
 
+// The path box is right-to-left so long paths are cut at the start; the LRM marks keep
+// a trailing backslash at the end instead of moving it to the front
+function showOutputDir(dir) {
+  $('txtOutputDir').textContent = `\u200E${dir}\u200E`;
+  $('txtOutputDir').title = dir;
+}
+
 function save(patch) {
   window.api.saveSettings(patch);
 }
@@ -351,8 +358,7 @@ function bindEvents() {
     const dir = await window.api.pickOutputDir();
     if (dir) {
       state.outputDir = dir;
-      $('txtOutputDir').textContent = dir;
-      $('txtOutputDir').title = dir;
+      showOutputDir(dir);
     }
   });
   $('btnConvert').addEventListener('click', startConversion);
@@ -451,8 +457,7 @@ async function init() {
   $('checkAutoTrim').checked = settings.autoTrim;
   $('checkReverse').checked = settings.reverse;
   $('checkOpenDir').checked = settings.openDir;
-  $('txtOutputDir').textContent = settings.outputDir;
-  $('txtOutputDir').title = settings.outputDir;
+  showOutputDir(settings.outputDir);
 
   applyStrings(strings);
   bindEvents();

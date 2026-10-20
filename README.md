@@ -1,8 +1,10 @@
-# Sonicware Lofi-12 XT Tool v2.0
+# Sonicware Lofi-12 XT Tool v2.0.0
 
-A high-speed batch audio converter specifically designed for hardware samplers like the Sonicware Lofi-12 XT. Powered by the legendary SoX (Sound eXchange) engine for maximum precision and performance. Built with Electron (Node.js).
+A high-speed batch audio converter specifically designed for hardware samplers like the Sonicware Lofi-12 XT. Powered by the legendary SoX (Sound eXchange) engine for maximum precision and performance.
 
-<img width="527" alt="Screenshot of Sonicware Lofi-12 XT Tool" src="docs/screenshot.png" />
+Version 2.0 is a complete rewrite in Electron (Node.js) with a new layout: all hardware settings and the output folder are in the sidebar, and the main window has the file list, a waveform preview and a convert bar with a progress bar. The window can be resized, and the grey and orange colors are the same as before.
+
+<img width="816" alt="Screenshot of Sonicware Lofi-12 XT Tool v2.0.0" src="docs/screenshot.png" />
 
 ## 🚀 Features
 
@@ -22,7 +24,8 @@ A high-speed batch audio converter specifically designed for hardware samplers l
 - **Reverse:** Reverses samples during conversion (output files get a `_rev` suffix).
 - **Preview:** Click a file to play it and see its waveform (WAV, MP3, FLAC, OGG and M4A; WMA can be converted but not previewed).
 - **Blazing fast:** Uses the SoX engine and converts in the background, so the window stays responsive.
-- **Clear errors:** Files that fail to convert are highlighted in the list; hover over one to see the SoX error message.
+- **Clear errors:** Converted files get a ✓ and files that fail are highlighted in the list; hover over one to see the SoX error message.
+- **SoX status:** The bottom of the sidebar shows whether SoX or SoX-NG was found; hover over it to see the path.
 - **Multilingual:** English, Danish, German, Spanish, French, Italian and Swedish (switch with the language picker at the bottom of the sidebar).
 - **Open source:** Free to use, modify, and distribute.
 
