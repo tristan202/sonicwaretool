@@ -1,0 +1,35 @@
+{
+  "name": "sonicwaretool",
+  "productName": "SonicwareTool",
+  "version": "2.0.0",
+  "description": "Batch audio converter for hardware samplers like the Sonicware Lofi-12 XT and Elektron Digitakt, powered by SoX.",
+  "main": "src/main/main.js",
+  "author": "tristan202",
+  "license": "GPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tristan202/sonicwaretool.git"
+  },
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test",
+    "dist": "electron-builder --win portable"
+  },
+  "devDependencies": {
+    "electron": "44.5.1",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "com.tristan202.sonicwaretool",
+    "productName": "SonicwareTool",
+    "artifactName": "sonicwaretool-${version}.${ext}",
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "portable",
+      "icon": "build/icon.png"
+    }
+  }
+}

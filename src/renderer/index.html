@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; media-src 'self' blob:; img-src 'self' data:">
+  <title>Sonicware Lofi-12 XT Tool</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <aside id="sidebar">
+      <div class="brand"><span class="brand-mark">SW</span> Lofi-12 XT Tool</div>
+      <div class="side-actions">
+        <button id="btnAddFiles" class="btn btn-primary btn-block"></button>
+        <button id="btnAddFolder" class="btn btn-block"></button>
+      </div>
+
+      <div class="side-scroll">
+        <div class="group-head" id="txtFrameSettings"></div>
+        <label class="field"><span id="lblDevice"></span><select id="comboDevice"></select></label>
+        <div class="row">
+          <label class="field grow"><span id="lblSampleRate"></span><select id="comboSampleRate"></select></label>
+          <label class="field grow"><span id="lblBitDepth"></span><select id="comboBitDepth"></select></label>
+        </div>
+        <label class="field"><span id="lblChannels"></span><select id="comboChannels"></select></label>
+        <div class="checks">
+          <label class="check"><input type="checkbox" id="checkNormalize"><span id="lblNormalize"></span></label>
+          <label class="check"><input type="checkbox" id="checkAutoTrim"><span id="lblAutoTrim"></span></label>
+          <label class="check"><input type="checkbox" id="checkReverse"><span id="lblReverse"></span></label>
+        </div>
+
+        <div class="group-head" id="txtFrameOutput"></div>
+        <div class="out-path" id="txtOutputDir"></div>
+        <button id="btnSetOutputDir" class="btn btn-block"></button>
+        <label class="check"><input type="checkbox" id="checkOpenDir"><span id="lblOpenDir"></span></label>
+      </div>
+
+      <div class="sidebar-foot">
+        <div id="txtSoxStatus"></div>
+        <button id="btnAbout" class="icon-btn">&#x24D8;</button>
+        <label class="lang-pick" id="langPick">
+          <span class="lang-icon" aria-hidden="true">&#x1F310;</span>
+          <select id="langSelect"></select>
+        </label>
+      </div>
+    </aside>
+
+    <main id="main">
+      <div id="topbar">
+        <span class="pane-kind" id="txtListHeader"></span>
+        <span class="count" id="txtCount"></span>
+        <span class="spacer"></span>
+        <button id="btnPreview" class="icon-btn">&#x25B6;</button>
+        <button id="btnStop" class="icon-btn">&#x25A0;</button>
+        <button id="btnClear" class="btn btn-sm"></button>
+      </div>
+
+      <section class="pane" id="fileList" tabindex="0">
+        <div class="pane-cols">
+          <span id="colName"></span>
+          <span id="colPath"></span>
+          <span></span>
+        </div>
+        <div class="pane-list" id="fileListBody"></div>
+        <div class="empty" id="emptyState">
+          <div class="empty-mark">&#x266B;</div>
+          <h2 id="txtEmptyTitle"></h2>
+          <p id="txtEmptyText"></p>
+        </div>
+      </section>
+
+      <div class="wave-card">
+        <canvas id="canvasWave"></canvas>
+      </div>
+
+      <footer id="convertBar">
+        <div class="progress-wrap">
+          <div id="txtStatus"></div>
+          <div class="m-bar"><i id="progressBar"></i></div>
+        </div>
+        <button id="btnConvert" class="btn btn-primary btn-lg"></button>
+      </footer>
+    </main>
+  </div>
+  <audio id="player"></audio>
+  <script src="renderer.js"></script>
+</body>
+</html>

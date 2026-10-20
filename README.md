@@ -1,6 +1,6 @@
-# Sonicware Lofi-12 XT Tool v1.6
+# Sonicware Lofi-12 XT Tool v2.0
 
-A high-speed batch audio converter specifically designed for hardware samplers like the Sonicware Lofi-12 XT. Powered by the legendary SoX (Sound eXchange) engine for maximum precision and performance.
+A high-speed batch audio converter specifically designed for hardware samplers like the Sonicware Lofi-12 XT. Powered by the legendary SoX (Sound eXchange) engine for maximum precision and performance. Built with Electron (Node.js).
 
 <img width="527" alt="Screenshot of Sonicware Lofi-12 XT Tool" src="docs/screenshot.png" />
 
@@ -20,16 +20,17 @@ A high-speed batch audio converter specifically designed for hardware samplers l
 - **Normalize:** Peak normalization to 0 dB for consistent volume across all your samples.
 - **Auto-Trim:** Removes silence at the start and end of each sample.
 - **Reverse:** Reverses samples during conversion (output files get a `_rev` suffix).
-- **Preview:** Click a file to play it and see its waveform (waveform display supports 16/24-bit PCM WAV).
+- **Preview:** Click a file to play it and see its waveform (WAV, MP3, FLAC, OGG and M4A; WMA can be converted but not previewed).
 - **Blazing fast:** Uses the SoX engine and converts in the background, so the window stays responsive.
-- **Multilingual:** English, Danish, German, Spanish, French, Italian and Swedish (switch via the *Language* menu).
+- **Clear errors:** Files that fail to convert are highlighted in the list; hover over one to see the SoX error message.
+- **Multilingual:** English, Danish, German, Spanish, French, Italian and Swedish (switch with the language picker at the bottom of the sidebar).
 - **Open source:** Free to use, modify, and distribute.
 
 Output is always WAV.
 
 ## 🛠 Installation
 
-1. **Download the tool:** Get the latest `.exe` from the [Releases](https://github.com/tristan202/sonicwaretool/releases) page.
+1. **Download the tool:** Get the latest portable `.exe` from the [Releases](https://github.com/tristan202/sonicwaretool/releases) page. No installation needed.
 2. **Get SoX:** The tool requires `sox.exe` ([SoX](https://sourceforge.net/projects/sox/)) or `sox_ng.exe` ([SoX-NG](https://codeberg.org/sox_ng/sox_ng)). The tool looks for it in this order:
    - the same folder as the tool (place `sox.exe` / `sox_ng.exe` and its `.dll` files there),
    - `C:\Program Files (x86)\sox-14-4-2\`,
@@ -38,7 +39,7 @@ Output is always WAV.
    If SoX can't be found, the tool asks you to locate it the first time you press **START CONVERSION**. MP3 and other compressed formats require a SoX build with support for those formats.
 3. **Run:** Open the tool and you are ready to go.
 
-Settings are stored in `%APPDATA%\SonicwareTool\lofi_config.ini`. Converted files go to `Documents\XT_Export` by default.
+Settings are stored in `%APPDATA%\SonicwareTool\settings.json` (settings from v1.x are imported automatically). Converted files go to `Documents\XT_Export` by default.
 
 ## 📖 How to Use
 
@@ -49,13 +50,33 @@ Settings are stored in `%APPDATA%\SonicwareTool\lofi_config.ini`. Converted file
 
 ## 🧑‍💻 Building from Source
 
-1. Install [PureBasic](https://www.purebasic.com/) 6.30 or newer (Windows x64).
-2. Open `sonicware.pb` in the PureBasic IDE. The compiler options (thread-safe, XP skin, DPI aware, icon) are stored at the bottom of the file.
-3. Compile, or from the command line:
+You need [Node.js](https://nodejs.org/) 20 or newer.
 
-   ```bash
-   pbcompiler sonicware.pb /THREAD /XP /DPIAWARE /ICON sonicware.ico /EXE sonicwaretool.exe
-   ```
+```bash
+npm install
+```
+
+Run the app (it finds `sox.exe` / `sox_ng.exe` in the project folder, or on your `PATH`):
+
+```bash
+npm start
+```
+
+Run the tests (the conversion test is skipped if SoX isn't found):
+
+```bash
+npm test
+```
+
+Build a portable Windows `.exe` into `dist/`:
+
+```bash
+npm run dist
+```
+
+The app uses Electron, so it can in principle run on macOS and Linux with `sox` installed from your package manager, but only Windows has been tested.
+
+The original PureBasic version (v1.x) is still available in the git history and in the v1.0.0 release.
 
 ## 📜 License
 

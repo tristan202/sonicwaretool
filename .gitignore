@@ -1,2 +1,4 @@
 lofi_config.ini
 *.exe
+node_modules/
+dist/
