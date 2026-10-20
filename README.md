@@ -30,9 +30,11 @@ Output is always WAV.
 
 ## 🛠 Installation
 
-1. **Download the tool:** Get the latest portable `.exe` from the [Releases](https://github.com/tristan202/sonicwaretool/releases) page. No installation needed.
+1. **Download the tool:** Get the latest release from the [Releases](https://github.com/tristan202/sonicwaretool/releases) page:
+   - `SonicwareTool Setup x.y.z.exe` installs the tool for your user (no admin rights needed) with a Start menu and desktop shortcut. It can be removed again from Windows Settings > Apps.
+   - `SonicwareTool-x.y.z-portable.exe` runs without installing.
 2. **Get SoX:** The tool requires `sox.exe` ([SoX](https://sourceforge.net/projects/sox/)) or `sox_ng.exe` ([SoX-NG](https://codeberg.org/sox_ng/sox_ng)). The tool looks for it in this order:
-   - the same folder as the tool (place `sox.exe` / `sox_ng.exe` and its `.dll` files there),
+   - the same folder as the tool (place `sox.exe` / `sox_ng.exe` and its `.dll` files there; for the installed version that is `%LOCALAPPDATA%\Programs\SonicwareTool`),
    - `C:\Program Files (x86)\sox-14-4-2\`,
    - any folder on your `PATH`.
 
@@ -68,10 +70,16 @@ Run the tests (the conversion test is skipped if SoX isn't found):
 npm test
 ```
 
-Build a portable Windows `.exe` into `dist/`:
+Build the Windows installer into `dist/`:
 
 ```bash
 npm run dist
+```
+
+Build the portable `.exe` instead (or `npm run dist:all` for both):
+
+```bash
+npm run dist:portable
 ```
 
 The app uses Electron, so it can in principle run on macOS and Linux with `sox` installed from your package manager, but only Windows has been tested.

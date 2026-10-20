@@ -13,7 +13,9 @@
   "scripts": {
     "start": "electron .",
     "test": "node --test",
-    "dist": "electron-builder --win portable"
+    "dist": "electron-builder --win nsis",
+    "dist:portable": "electron-builder --win portable",
+    "dist:all": "electron-builder --win nsis portable"
   },
   "devDependencies": {
     "electron": "44.5.1",
@@ -22,14 +24,35 @@
   "build": {
     "appId": "com.tristan202.sonicwaretool",
     "productName": "SonicwareTool",
-    "artifactName": "sonicwaretool-${version}.${ext}",
     "files": [
       "src/**/*",
       "package.json"
     ],
+    "electronLanguages": [
+      "en-US",
+      "da",
+      "de",
+      "es",
+      "fr",
+      "it",
+      "sv"
+    ],
+    "compression": "maximum",
     "win": {
-      "target": "portable",
+      "target": [
+        "nsis"
+      ],
       "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "deleteAppDataOnUninstall": false,
+      "shortcutName": "Sonicware Lofi-12 XT Tool",
+      "artifactName": "${productName} Setup ${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-portable.${ext}"
     }
   }
 }
